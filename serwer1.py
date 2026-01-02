@@ -20,6 +20,7 @@ class HeightsClass:
         return self.heights
 
 Heights = HeightsClass()
+#Heights.Setter([0,0,0,0,0,1,2,3,4,5,16,14,34,25,34])
 
 @app.route('/')
 def default():
