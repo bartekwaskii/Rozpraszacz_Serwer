@@ -9,10 +9,12 @@ class HeightsClass:
     def __init__(self):
         self.heights = numpy.zeros(15)
 
-    def Setter(self, _heights):
+    def Setter(self, _heights: numpy.ndarray):
         if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
             self.heights = _heights
-            print(self.heights)
+            return 0
+        else:
+            return -1
     
     def Getter(self):
         return self.heights
@@ -27,10 +29,13 @@ def default():
 def SetHeights():
     if request.is_json:
         receivedData = request.get_json()
-        Heights.Setter(numpy.array(receivedData['Heights']))
-        return 'OK', 200
+        isOK = Heights.Setter(numpy.array(receivedData['Heights']))
+        if(isOK == 0):
+            return 'OK', 200
+        else:
+            return 'ERROR: wrong value or size', 400
     else:
-        return 'ERROR', 400
+        return 'ERROR: request is not JSON', 400
 
 @app.route('/GetHeights', methods=['GET'])
 def GetHeights():
