@@ -15,25 +15,21 @@ class HeightsClass:
     def Setter(self, _heights: numpy.ndarray):
         if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
             self.heights = _heights
-            return 0
+            return 'OK', 200
         else:
-            return -1
+            return 'ERROR: wrong value or size', 400
     
     def Getter(self):
         return self.heights
     
 Heights = HeightsClass()
 
-def CheckMessage(request):
-    if request.is_json:
-        receivedData = request.get_json()
-        try:
-            isOK = Heights.Setter(numpy.array(receivedData['Heights']))
-            if(isOK == 0):
-                return 'OK', 200
-            else:
-                return 'ERROR: wrong value or size', 400
-        except:
+def CheckMessage(_request):
+    if _request.is_json:
+        receivedData = _request.get_json()
+        if 'Heights' in receivedData and isinstance(receivedData['Heights'],list):
+            return True
+        else:
             return 'ERROR: no value named "Heights"', 400
     else:
         return 'ERROR: request is not JSON', 400
@@ -44,12 +40,11 @@ def default():
 
 @app.route('/SetHeights', methods=['POST'])
 def SetHeights():
-    if(CheckMessage(request)=='OK'):
+    if(CheckMessage(request)==True):
         receivedData = request.get_json()
-        Heights.Setter(numpy.array(receivedData['Heights']))
-    print(CheckMessage(request))
-    return CheckMessage(request)
-    
+        return Heights.Setter(numpy.array(receivedData['Heights']))
+    else:
+        return CheckMessage(request)
 
 
 @app.route('/GetHeights', methods=['GET'])
