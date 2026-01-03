@@ -17,11 +17,13 @@ class HeightsClass:
     def Setter(self, _heights: numpy.ndarray): # setter wysokości
         if(self.CheckData(_heights)=='OK', 200):
             self.heights = _heights
+            Functions.StartSettingHeights(self.heights)
         return self.CheckData(_heights)
         
-    def currentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
+    def CurrentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
         if(self.CheckData(_currentPositions)=='OK'):
             self.currentPositions = _currentPositions
+            Functions.StartCalibration(_currentPositions)
         return self.CheckData(_currentPositions)
     
     def Getter(self): # getter wysokości
