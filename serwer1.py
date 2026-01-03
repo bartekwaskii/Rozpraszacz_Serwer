@@ -19,6 +19,13 @@ class HeightsClass:
         else:
             return 'ERROR: wrong value or size', 400
     
+    def currentPositionsSetter(self, _currentPositions: numpy.ndarray):
+        if(numpy.size(_currentPositions)==15 and numpy.min(_currentPositions)>=0 and numpy.max(_currentPositions)<=60):
+            self.currentPositions = _currentPositions
+            return 'OK', 200
+        else:
+            return 'ERROR: wrong value or size', 400
+    
     def Getter(self):
         return self.heights
     
@@ -36,7 +43,7 @@ def CheckMessage(_request):
 
 @app.route('/')
 def default():
-    return "\nRaspberryPi nr 1. Stan połączenia: OK "
+    return "\nRaspberryPi nr 1 (1-15). Stan połączenia: OK "
 
 @app.route('/SetHeights', methods=['POST'])
 def SetHeights():
@@ -50,6 +57,14 @@ def SetHeights():
 @app.route('/GetHeights', methods=['GET'])
 def GetHeights():
     return {'Heights':Heights.Getter().tolist()}, 200
+
+@app.route('/Calibration', methods=['POST'])
+def Calibration():
+    if(CheckMessage(request)==True):
+        receivedData = request.get_json()
+        return Heights.currentPositionsSetter(numpy.array(receivedData['Heights']))
+    else:
+        return CheckMessage(request)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=55555)
