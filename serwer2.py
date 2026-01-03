@@ -9,41 +9,46 @@ app = Flask(__name__)
 class HeightsClass:
 
     def __init__(self):
-        self.heights = numpy.zeros(15)
-        self.currentPositions = numpy.zeros(15)
+        self.heights = numpy.zeros(15) # zmienna z wysokościami do ustawienia/aktualnymi po ustawieniu
+        self.currentPositions = numpy.zeros(15) # zmienna z wartościami do kalibracji/wyzerowania studzienek przed pracą 
 
-    def Setter(self, _heights: numpy.ndarray):
-        if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
+    def Setter(self, _heights: numpy.ndarray): # setter wysokości
+        if(self.CheckData(_heights)=='OK'):
             self.heights = _heights
-            return 'OK', 200
-        else:
-            return 'ERROR: wrong value or size', 400
-    
-    def currentPositionsSetter(self, _currentPositions: numpy.ndarray):
-        if(numpy.size(_currentPositions)==15 and numpy.min(_currentPositions)>=0 and numpy.max(_currentPositions)<=60):
+        return self.CheckData(_heights)
+        
+    def currentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
+        if(self.CheckData(_currentPositions)=='OK'):
             self.currentPositions = _currentPositions
+        return self.CheckData(_currentPositions)
+    
+    def Getter(self): # getter wysokości
+        return self.heights
+    
+    def CheckData(self, _heights): # funkcja sprawdzająca poprawność danych 
+        if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
             return 'OK', 200
         else:
             return 'ERROR: wrong value or size', 400
-    
-    def Getter(self):
-        return self.heights
+
     
 Heights = HeightsClass()
 
-def CheckMessage(_request):
+def CheckMessage(_request): # funkcja sprawdzająca poprawność typu danych w zapytaniu http post
     if _request.is_json:
         receivedData = _request.get_json()
-        if 'Heights' in receivedData and isinstance(receivedData['Heights'],list):
+        if 'Heights' in receivedData:
             return True
         else:
             return 'ERROR: no value named "Heights"', 400
     else:
         return 'ERROR: request is not JSON', 400
 
+# endpointy
+
 @app.route('/')
 def default():
-    return "\nRaspberryPi nr 2 (16-30). Stan połączenia: OK "
+    return "\nRaspberryPi nr 2 (16-30). Stan połączenia: OK ", 200
 
 @app.route('/SetHeights', methods=['POST'])
 def SetHeights():
