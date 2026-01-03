@@ -2,7 +2,9 @@
 
 from flask import Flask, request, jsonify
 import numpy
-import json
+from time import sleep
+#import 	RPi.GPIO as GPIO
+import Functions
 
 app = Flask(__name__)
 
@@ -31,18 +33,7 @@ class HeightsClass:
         else:
             return 'ERROR: wrong value or size', 400
 
-    
-Heights = HeightsClass()
-
-def CheckMessage(_request): # funkcja sprawdzająca poprawność typu danych w zapytaniu http post
-    if _request.is_json:
-        receivedData = _request.get_json()
-        if 'Heights' in receivedData:
-            return True
-        else:
-            return 'ERROR: no value named "Heights"', 400
-    else:
-        return 'ERROR: request is not JSON', 400
+Heights = HeightsClass() # tworzenie obiektu Heights przechowującego informacje o wysokościach studzienek
 
 # endpointy
 
@@ -52,11 +43,11 @@ def default():
 
 @app.route('/SetHeights', methods=['POST'])
 def SetHeights():
-    if(CheckMessage(request)==True):
+    if(Functions.CheckMessage(request)==True):
         receivedData = request.get_json()
         return Heights.Setter(numpy.array(receivedData['Heights']))
     else:
-        return CheckMessage(request)
+        return Functions.CheckMessage(request)
 
 
 @app.route('/GetHeights', methods=['GET'])
@@ -65,11 +56,11 @@ def GetHeights():
 
 @app.route('/Calibration', methods=['POST'])
 def Calibration():
-    if(CheckMessage(request)==True):
+    if(Functions.CheckMessage(request)==True):
         receivedData = request.get_json()
         return Heights.currentPositionsSetter(numpy.array(receivedData['Heights']))
     else:
-        return CheckMessage(request)
+        return Functions.CheckMessage(request)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=55555)
