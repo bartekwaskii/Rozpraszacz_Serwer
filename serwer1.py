@@ -1,3 +1,5 @@
+# serwer 1 dla, studzienek 1-15
+
 from flask import Flask, request, jsonify
 import numpy
 import json
@@ -8,6 +10,7 @@ class HeightsClass:
 
     def __init__(self):
         self.heights = numpy.zeros(15)
+        self.currentPositions = numpy.zeros(15)
 
     def Setter(self, _heights: numpy.ndarray):
         if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
@@ -18,9 +21,22 @@ class HeightsClass:
     
     def Getter(self):
         return self.heights
-
+    
 Heights = HeightsClass()
-#Heights.Setter([0,0,0,0,0,1,2,3,4,5,16,14,34,25,34])
+
+def CheckMessage(request):
+    if request.is_json:
+        receivedData = request.get_json()
+        try:
+            isOK = Heights.Setter(numpy.array(receivedData['Heights']))
+            if(isOK == 0):
+                return 'OK', 200
+            else:
+                return 'ERROR: wrong value or size', 400
+        except:
+            return 'ERROR: no value named "Heights"', 400
+    else:
+        return 'ERROR: request is not JSON', 400
 
 @app.route('/')
 def default():
@@ -28,15 +44,13 @@ def default():
 
 @app.route('/SetHeights', methods=['POST'])
 def SetHeights():
-    if request.is_json:
+    if(CheckMessage(request)=='OK'):
         receivedData = request.get_json()
-        isOK = Heights.Setter(numpy.array(receivedData['Heights']))
-        if(isOK == 0):
-            return 'OK', 200
-        else:
-            return 'ERROR: wrong value or size', 400
-    else:
-        return 'ERROR: request is not JSON', 400
+        Heights.Setter(numpy.array(receivedData['Heights']))
+    print(CheckMessage(request))
+    return CheckMessage(request)
+    
+
 
 @app.route('/GetHeights', methods=['GET'])
 def GetHeights():
