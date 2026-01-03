@@ -13,7 +13,7 @@ class HeightsClass:
         self.currentPositions = numpy.zeros(15) # zmienna z wartościami do kalibracji/wyzerowania studzienek przed pracą 
 
     def Setter(self, _heights: numpy.ndarray): # setter wysokości
-        if(self.CheckData(_heights)=='OK'):
+        if(self.CheckData(_heights)=='OK', 200):
             self.heights = _heights
         return self.CheckData(_heights)
         
