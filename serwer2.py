@@ -2,7 +2,7 @@
 
 from flask import Flask, request, jsonify
 import numpy
-import json
+import Functions
 
 app = Flask(__name__)
 
@@ -15,11 +15,13 @@ class HeightsClass:
     def Setter(self, _heights: numpy.ndarray): # setter wysokości
         if(self.CheckData(_heights)=='OK', 200):
             self.heights = _heights
+            Functions.StartSettingHeights(self.heights)
         return self.CheckData(_heights)
         
-    def currentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
+    def CurrentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
         if(self.CheckData(_currentPositions)=='OK'):
             self.currentPositions = _currentPositions
+            Functions.StartCalibration(_currentPositions)
         return self.CheckData(_currentPositions)
     
     def Getter(self): # getter wysokości
@@ -31,32 +33,21 @@ class HeightsClass:
         else:
             return 'ERROR: wrong value or size', 400
 
-    
-Heights = HeightsClass()
-
-def CheckMessage(_request): # funkcja sprawdzająca poprawność typu danych w zapytaniu http post
-    if _request.is_json:
-        receivedData = _request.get_json()
-        if 'Heights' in receivedData:
-            return True
-        else:
-            return 'ERROR: no value named "Heights"', 400
-    else:
-        return 'ERROR: request is not JSON', 400
+Heights = HeightsClass() # tworzenie obiektu Heights przechowującego informacje o wysokościach studzienek
 
 # endpointy
 
 @app.route('/')
 def default():
-    return "\nRaspberryPi nr 2 (16-30). Stan połączenia: OK ", 200
+    return "\nRaspberryPi nr 2 (16-30). Stan połączenia: OK "
 
 @app.route('/SetHeights', methods=['POST'])
 def SetHeights():
-    if(CheckMessage(request)==True):
+    if(Functions.CheckMessage(request)==True):
         receivedData = request.get_json()
         return Heights.Setter(numpy.array(receivedData['Heights']))
     else:
-        return CheckMessage(request)
+        return Functions.CheckMessage(request)
 
 
 @app.route('/GetHeights', methods=['GET'])
@@ -65,11 +56,11 @@ def GetHeights():
 
 @app.route('/Calibration', methods=['POST'])
 def Calibration():
-    if(CheckMessage(request)==True):
+    if(Functions.CheckMessage(request)==True):
         receivedData = request.get_json()
         return Heights.currentPositionsSetter(numpy.array(receivedData['Heights']))
     else:
-        return CheckMessage(request)
+        return Functions.CheckMessage(request)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=55556)

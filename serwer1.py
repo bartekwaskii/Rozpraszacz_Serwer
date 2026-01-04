@@ -2,8 +2,6 @@
 
 from flask import Flask, request, jsonify
 import numpy
-from time import sleep
-#import 	RPi.GPIO as GPIO
 import Functions
 
 app = Flask(__name__)
