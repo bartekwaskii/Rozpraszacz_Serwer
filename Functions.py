@@ -7,7 +7,7 @@ def CheckMessage(_request): # funkcja sprawdzająca poprawność typu danych w z
     if 'Heights' in receivedData:
         return True
     else:
-            return 'ERROR: no value named "Heights"', 400
+        return 'ERROR: no value named "Heights"', 400
     
 def StartSettingHeights(_heights: numpy.ndarray):
     # tutaj będzie kod odpowiedzialny z sterowanie stdzienkami
