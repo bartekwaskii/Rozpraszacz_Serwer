@@ -1,1 +1,1 @@
-Serwer python flask do okmunikacji pomiędzy RaspberryPi a LabVIEW
+Serwer python flask do komunikacji pomiędzy RaspberryPi a LabVIEW
