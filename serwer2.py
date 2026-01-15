@@ -58,7 +58,7 @@ def GetHeights():
 def Calibration():
     if(Functions.CheckMessage(request)==True):
         receivedData = request.get_json()
-        return Heights.currentPositionsSetter(numpy.array(receivedData['Heights']))
+        return Heights.CurrentPositionsSetter(numpy.array(receivedData['Heights']))
     else:
         return Functions.CheckMessage(request)
 
