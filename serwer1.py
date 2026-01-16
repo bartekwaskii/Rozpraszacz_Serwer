@@ -33,7 +33,7 @@ class HeightsClass:
         if(numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
             return 'OK', 200
         else:
-            return 'ERROR: wrong value or size', 400
+            return 'ERROR: wrong value(s)', 400
 
 Heights = HeightsClass() # tworzenie obiektu Heights przechowującego informacje o wysokościach studzienek
 
