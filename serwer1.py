@@ -9,23 +9,23 @@ app = Flask(__name__)
 class HeightsClass:
 
     def __init__(self):
-        self.heights = numpy.zeros(15) # zmienna z wysokościami do ustawienia/aktualnymi po ustawieniu
-        self.currentPositions = numpy.zeros(15) # zmienna z wartościami do kalibracji/wyzerowania studzienek przed pracą 
+        self.__heights = numpy.zeros(15) # zmienna z wysokościami do ustawienia/aktualnymi po ustawieniu
+        self.__currentPositions = numpy.zeros(15) # zmienna z wartościami do kalibracji/wyzerowania studzienek przed pracą 
 
     def Setter(self, _heights: numpy.ndarray): # setter wysokości
         if(self.CheckData(_heights)=='OK', 200):
-            self.heights = _heights
-            Functions.StartSettingHeights(self.heights)
+            self.__heights = _heights
+            Functions.StartSettingHeights(self.__heights)
         return self.CheckData(_heights)
         
     def CurrentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
         if(self.CheckData(_currentPositions)=='OK'):
-            self.currentPositions = _currentPositions
+            self.__currentPositions = _currentPositions
             Functions.StartCalibration(_currentPositions)
         return self.CheckData(_currentPositions)
     
     def Getter(self): # getter wysokości
-        return self.heights
+        return self.__heights
     
     def CheckData(self, _heights): # funkcja sprawdzająca poprawność danych 
         if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):

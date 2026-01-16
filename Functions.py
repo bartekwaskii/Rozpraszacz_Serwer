@@ -1,6 +1,6 @@
 import numpy
 
-def CheckMessage(_request): # funkcja sprawdzająca poprawność typu danych w zapytaniu http post
+def CheckMessage(_request):
     if not _request.is_json:
         return 'ERROR: request is not JSON', 400   
     receivedData = _request.get_json()
