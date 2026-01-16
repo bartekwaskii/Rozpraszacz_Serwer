@@ -27,8 +27,10 @@ class HeightsClass:
     def Getter(self): # getter wysokości
         return self.__heights
     
-    def CheckData(self, _heights): # funkcja sprawdzająca poprawność danych 
-        if(numpy.size(_heights)==15 and numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
+    def CheckData(self, _heights):
+        if(numpy.size(_heights)!=15):
+            return'ERROR: wrong size', 400
+        if(numpy.min(_heights)>=0 and numpy.max(_heights)<=60):
             return 'OK', 200
         else:
             return 'ERROR: wrong value or size', 400
