@@ -20,8 +20,9 @@ class HeightsClass:
         
     def CurrentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
         if(self.CheckData(_currentPositions)=='OK'):
-            self.currentPositions = _currentPositions
-            Functions.StartCalibration(_currentPositions)
+            self.__currentPositions = _currentPositions
+            Functions.StartCalibration(self.__currentPositions, self.__previousPositions)
+            self.__previousPositions = self.__currentPositions
         return self.CheckData(_currentPositions)
     
     def Getter(self): # getter wysokości
