@@ -10,7 +10,8 @@ class HeightsClass:
 
     def __init__(self):
         self.__heights = numpy.zeros(15) # zmienna z wysokościami do ustawienia/aktualnymi po ustawieniu
-        self.__currentPositions = numpy.zeros(15) # zmienna z wartościami do kalibracji/wyzerowania studzienek przed pracą 
+        self.__currentPositions = numpy.zeros(15) # zmienna z wartościami do kalibracji/wyzerowania studzienek przed pracą
+        self.__previousPositions = numpy.zeros(15) # zmienna referencyjna do ustawienia nowej pozycji
 
     def Setter(self, _heights: numpy.ndarray): # setter wysokości
         if(self.CheckData(_heights)=='OK', 200):
@@ -21,7 +22,8 @@ class HeightsClass:
     def CurrentPositionsSetter(self, _currentPositions: numpy.ndarray): # setter kalibracyjny
         if(self.CheckData(_currentPositions)=='OK'):
             self.__currentPositions = _currentPositions
-            Functions.StartCalibration(self.__currentPositions)
+            Functions.StartCalibration(self.__currentPositions, self.__previousPositions)
+            self.__previousPositions = self.__currentPositions
         return self.CheckData(_currentPositions)
     
     def Getter(self): # getter wysokości
